@@ -11,8 +11,6 @@ from keras.models import Sequential, load_model
 from keras.optimizers import Adam, RMSprop, SGD
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau, Callback,ModelCheckpoint
 from keras.layers import Dense, TimeDistributed, LSTM, Dropout, GRU
-import os, random, struct
-from Crypto.Cipher import AES
 
 
 
@@ -137,7 +135,7 @@ def forecast_lstm(model, batch_size, X):
 	return yhat[0,0]
 
 
-
+"""
 def encrypt_file(key, in_filename, out_filename=None, chunksize=64*1024):
 
     if not out_filename:
@@ -179,4 +177,4 @@ def decrypt_file(key, in_filename, out_filename=None, chunksize=24*1024):
                 outfile.write(decryptor.decrypt(chunk))
 
             outfile.truncate(origsize)
-    os.remove(in_filename)
+    os.remove(in_filename)"""

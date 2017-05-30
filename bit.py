@@ -18,7 +18,7 @@ n_samples = 10
 
 
 # load and prepare price dataset
-bitcoindata = read_csv('krakenEUR.csv', header=None,names=['time','price','volume'], squeeze=True,nrows=n_samples)
+bitcoindata = read_csv('~/krakenEUR.csv', header=None,names=['time','price','volume'], squeeze=True,nrows=n_samples)
 time_start,time_end = min(bitcoindata['time']),max(bitcoindata['time'])
 action = ['mean','none']
 
