@@ -7,7 +7,7 @@ from master import *
 
 training_fraction = 0.8
 repeats = 1
-epochs = 30
+epochs = 10
 nb_neurons = 10
 batch_size = 1
 future =  1
