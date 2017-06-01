@@ -35,9 +35,9 @@ df = df.dropna()
 
 train, test = df[:-int( (1-training_fraction)*len(df)) ], df[-int( (1-training_fraction)*len(df)):]
 # EVALUATE THE BEST PREDICTIONS
-decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"%s.h5.enc"%model_name)
+#decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"%s.h5.enc"%model_name)
 lstm_model = load_model("%s.h5"%model_name)
-#lstm_model.load_weights("temp_weights.hdf5")
+#lstm_model.load_weights("%s.h5"%model_name)
 encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"%s.h5"%model_name)
 lstm_model.reset_states()
 

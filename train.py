@@ -9,7 +9,7 @@ training_fraction = 0.8
 repeats = 1
 epochs = 30
 nb_neurons = 10
-batch_size = 1
+batch_size = 10
 future =  5
 n_samples = 10
 
