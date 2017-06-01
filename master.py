@@ -11,6 +11,7 @@ from keras.models import Sequential, load_model
 from keras.optimizers import Adam, RMSprop, SGD
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau, Callback,ModelCheckpoint
 from keras.layers import Dense, TimeDistributed, LSTM, Dropout, GRU
+import os
 
 
 
@@ -124,6 +125,7 @@ def fit_lstm(train, batch_size, nb_epoch, neurons,loss,val_loss):
 	val_loss.append(history.history['val_loss'])
 	model.reset_states()
 	model.load_weights("temp_weights.hdf5")
+	encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5")
 	return model, loss, val_loss
 
 
@@ -135,7 +137,11 @@ def forecast_lstm(model, batch_size, X):
 	return yhat[0,0]
 
 
-"""
+
+from Crypto.Cipher import AES
+from Crypto import Random
+import os, random, struct
+
 def encrypt_file(key, in_filename, out_filename=None, chunksize=64*1024):
 
     if not out_filename:
@@ -177,4 +183,4 @@ def decrypt_file(key, in_filename, out_filename=None, chunksize=24*1024):
                 outfile.write(decryptor.decrypt(chunk))
 
             outfile.truncate(origsize)
-    os.remove(in_filename)"""
+    os.remove(in_filename)

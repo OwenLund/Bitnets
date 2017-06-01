@@ -15,10 +15,8 @@ n_samples = 10
 
 
 
-
-
 # load and prepare price dataset
-bitcoindata = read_csv('~/krakenEUR.csv', header=None,names=['time','price','volume'], squeeze=True,nrows=n_samples)
+bitcoindata = read_csv(os.path.join(os.path.expanduser('~'),'krakenEUR.csv'), header=None,names=['time','price','volume'], squeeze=True,nrows=n_samples)
 time_start,time_end = min(bitcoindata['time']),max(bitcoindata['time'])
 action = ['mean','none']
 
@@ -80,6 +78,7 @@ for r in range(repeats):
 	print('%d) Test RMSE: %.3f' % (r+1, rmse))
 	if r == 0:
 		lstm_model.save_weights("best_model.hdf5")
+		decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5")
 	else:
 		if rmse < min(error_scores):
 			print "Best model so far has been found: Saving model"
@@ -90,7 +89,10 @@ for r in range(repeats):
 
 
 # EVALUATE THE BEST PREDICTIONS
+
+decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5.enc")
 lstm_model.load_weights("best_model.hdf5")
+encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5")
 lstm_model.reset_states()
 columns = list(train.columns.values)
 X = train[columns[:-1]]
