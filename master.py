@@ -120,7 +120,7 @@ def fit_lstm(train, batch_size, nb_epoch, neurons,loss,val_loss):
 	model.compile(loss='mean_squared_error', optimizer='adam')
 
 
-	history = model.fit(X, y, nb_epoch=nb_epoch, batch_size=batch_size, verbose=1, shuffle=False,callbacks=callbacks,validation_split=0.2)
+	history = model.fit(X, y, epochs=nb_epoch, batch_size=batch_size, verbose=1, shuffle=False,callbacks=callbacks,validation_split=0.2)
 	loss.append(history.history['loss'])
 	val_loss.append(history.history['val_loss'])
 	model.reset_states()

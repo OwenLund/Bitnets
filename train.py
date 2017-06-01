@@ -26,7 +26,7 @@ df = bin_data(bitcoindata,action,time_start,time_end,future)
 # I will need to combine all datasets here in the future
 
 df = DataFrame()
-df['price'] = np.sin(np.arange(0,100,0.01))
+df['price'] = np.sin(np.arange(0,10,0.01))
 
 
 # Make a differenced series

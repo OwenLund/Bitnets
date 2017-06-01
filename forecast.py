@@ -20,11 +20,11 @@ df = bin_data(bitcoindata,action,time_start,time_end,future)
 # I will need to combine all datasets here in the future
 
 df = DataFrame()
-df['price'] = np.sin(np.arange(0,100,0.01))
+df['price'] = np.sin(np.arange(0,20,0.01))
 
 # Make a differenced series
-df = difference(df, future)
-df = df.dropna()
+#df = difference(df, future)
+#df = df.dropna()
 
 # Scale series between -1 and 1
 scaler, df = scale(df,training_fraction)
@@ -37,7 +37,7 @@ train, test = df[:-int( (1-training_fraction)*len(df)) ], df[-int( (1-training_f
 # EVALUATE THE BEST PREDICTIONS
 decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"%s.h5.enc"%model_name)
 lstm_model = load_model("%s.h5"%model_name)
-lstm_model.load_weights("temp_weights.hdf5")
+#lstm_model.load_weights("temp_weights.hdf5")
 encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"%s.h5"%model_name)
 lstm_model.reset_states()
 
@@ -52,7 +52,7 @@ for i in range(len(test)-future):
 	X, y = test[columns[:-1]].values[i], test['target'].values[i]
 	prediction = forecast_lstm(lstm_model, batch_size, X)
 	prediction = invert_scale(scaler, X, prediction)
-	prediction = inverse_difference(df['price'].values[-len(test):], prediction, i)
+	#prediction = inverse_difference(df['price'].values[-len(test):], prediction, i)
 	predictions.append(prediction)
 predictions = list(reversed(predictions))
 for i in range(future):
