@@ -77,13 +77,13 @@ for r in range(repeats):
 	rmse = sqrt(mean_squared_error(df['price'].values[-len(test):], predictions))
 	print('%d) Test RMSE: %.3f' % (r+1, rmse))
 	if r == 0:
-		lstm_model.save("best_model.hdf5")
-		encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5")
+		lstm_model.save("best_model.h5")
+		encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.h5")
 	else:
 		if rmse < min(error_scores):
 			print "Best model so far has been found: Saving model"
-			lstm_model.save("best_model.hdf5")
-			encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5")
+			lstm_model.save("best_model.h5")
+			encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.h5")
 
 	error_scores.append(rmse)
 
@@ -91,9 +91,9 @@ for r in range(repeats):
 
 # EVALUATE THE BEST PREDICTIONS
 
-decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5.enc")
-lstm_model.load_weights("best_model.hdf5")
-encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5")
+decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.h5.enc")
+lstm_model.load_weights("best_model.h5")
+encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.h5")
 lstm_model.reset_states()
 columns = list(train.columns.values)
 X = train[columns[:-1]]

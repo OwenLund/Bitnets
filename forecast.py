@@ -46,9 +46,9 @@ train, test = df[:-int( (1-training_fraction)*len(df)) ], df[-int( (1-training_f
 loss, val_loss = [],[]
 # EVALUATE THE BEST PREDICTIONS
 decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5.enc")
-lstm_model = load_model("best_model.hdf5")
-lstm_model.load_weights("best_model.hdf5")
-encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5")
+lstm_model = load_model("best_model.h5")
+lstm_model.load_weights("best_model.h5")
+encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.h5")
 lstm_model.reset_states()
 columns = list(train.columns.values)
 X = train[columns[:-1]]
