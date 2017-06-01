@@ -7,7 +7,7 @@ from math import sqrt, ceil
 import operator
 import matplotlib.pyplot as plt
 import numpy as np
-from keras.models import Sequential, load_model
+from keras.models import Sequential, load_model, load_weights
 from keras.optimizers import Adam, RMSprop, SGD
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau, Callback,ModelCheckpoint
 from keras.layers import Dense, TimeDistributed, LSTM, Dropout, GRU
