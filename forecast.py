@@ -20,7 +20,7 @@ df = bin_data(bitcoindata,action,time_start,time_end,future)
 # I will need to combine all datasets here in the future
 
 df = DataFrame()
-df['price'] = np.sin(np.linest(0,100,1000))
+df['price'] = np.sin(np.arange(0,100,0.1))
 
 # Make a differenced series
 #df = difference(df, future)
@@ -38,6 +38,7 @@ train, test = df[:-int( (1-training_fraction)*len(df)) ], df[-int( (1-training_f
 try:
 	decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"%s.h5.enc"%model_name)
 except:
+	pass
 
 lstm_model = load_model("%s.h5"%model_name)
 #lstm_model.load_weights("%s.h5"%model_name)
