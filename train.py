@@ -114,31 +114,3 @@ predictions = list(reversed(predictions))
 rmse = sqrt(mean_squared_error(df['price'].values[-len(test):], predictions))
 print "-----------------"
 print('%d) BEST RMSE: %.3f' % (r+1, rmse))
-
-plt.plot(predictions,label="Predictions")
-plt.plot(df['price'].values[-len(test):],label="True Values")
-plt.ylabel("Price")
-plt.xlabel("Time - minutes")
-plt.legend()
-plt.show()
-
-
-loss = reduce(operator.add,loss)
-val_loss= reduce(operator.add,val_loss)
-plt.plot(loss,label="Training")
-plt.plot(val_loss,label="Validation")
-plt.legend()
-plt.xlabel("Training Epoch")
-plt.ylabel("Error")
-plt.semilogy()
-plt.show()
-
-if repeats != 1:
-	# summarize results
-	results = DataFrame()
-	results['rmse'] = error_scores
-	print(results.describe())
-	results.boxplot()
-	plt.show()
-
-#"""
