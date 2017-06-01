@@ -128,14 +128,11 @@ def fit_lstm(train, batch_size, nb_epoch, neurons,loss,val_loss):
 	encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"temp_weights.hdf5")
 	return model, loss, val_loss
 
-
-
 def forecast_lstm(model, batch_size, X):
 	"Make a forward Prediction"
 	X = X.reshape(1, 1, len(X))
 	yhat = model.predict(X, batch_size=batch_size)
 	return yhat[0,0]
-
 
 
 from Crypto.Cipher import AES
