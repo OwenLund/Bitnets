@@ -46,7 +46,7 @@ train, test = df[:-int( (1-training_fraction)*len(df)) ], df[-int( (1-training_f
 loss, val_loss = [],[]
 # EVALUATE THE BEST PREDICTIONS
 lstm_model = Sequential()
-lstm_model.add(LSTM(neurons, batch_input_shape=(batch_size, X.shape[1], X.shape[2]), stateful=True))
+lstm_model.add(LSTM(nb_neurons, batch_input_shape=(batch_size, X.shape[1], X.shape[2]), stateful=True))
 lstm_model.add(Dense(1))
 decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5.enc")
 lstm_model.load_weights("best_model.hdf5")
