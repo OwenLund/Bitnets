@@ -10,7 +10,7 @@ repeats = 1
 epochs = 30
 nb_neurons = 10
 batch_size = 1
-future =  5
+future =  1
 n_samples = 10
 
 
