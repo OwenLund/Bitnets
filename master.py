@@ -125,7 +125,7 @@ def fit_lstm(train, batch_size, nb_epoch, neurons,loss,val_loss):
 	val_loss.append(history.history['val_loss'])
 	model.reset_states()
 	model.load_weights("temp_weights.hdf5")
-	encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5")
+	encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"temp_weights.hdf5")
 	return model, loss, val_loss
 
 
