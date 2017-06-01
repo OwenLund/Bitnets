@@ -1,20 +1,12 @@
 from master import *
 
-
-
-
-
-
+n_samples = 10
 training_fraction = 0.8
 repeats = 1
-epochs = 20
+epochs = 1000
 nb_neurons = 10
 batch_size = 1
 future =  5
-n_samples = 10
-
-
-
 # load and prepare price dataset
 bitcoindata = read_csv(os.path.join(os.path.expanduser('~'),'krakenEUR.csv'), header=None,names=['time','price','volume'], squeeze=True,nrows=n_samples)
 time_start,time_end = min(bitcoindata['time']),max(bitcoindata['time'])
@@ -45,7 +37,7 @@ df = df.dropna()
 train, test = df[:-int( (1-training_fraction)*len(df)) ], df[-int( (1-training_fraction)*len(df)):]
 loss, val_loss = [],[]
 # EVALUATE THE BEST PREDICTIONS
-decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5.enc")
+decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.h5.enc")
 lstm_model = load_model("best_model.h5")
 lstm_model.load_weights("best_model.h5")
 encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.h5")
@@ -68,7 +60,7 @@ for i in range(future):
 predictions = list(reversed(predictions))
 rmse = sqrt(mean_squared_error(df['price'].values[-len(test):], predictions))
 print "-----------------"
-print('%d) BEST RMSE: %.3f' % (r+1, rmse))
+print ('RMSE: %.3f' % (rmse))
 
 plt.plot(predictions,label="Predictions")
 plt.plot(df['price'].values[-len(test):],label="True Values")
@@ -78,6 +70,7 @@ plt.legend()
 plt.show()
 
 
+"""
 loss = reduce(operator.add,loss)
 val_loss= reduce(operator.add,val_loss)
 plt.plot(loss,label="Training")
