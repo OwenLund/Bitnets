@@ -7,7 +7,7 @@ from master import *
 
 training_fraction = 0.8
 repeats = 1
-epochs = 500
+epochs = 20
 nb_neurons = 10
 batch_size = 1
 future =  5
@@ -26,7 +26,7 @@ df = bin_data(bitcoindata,action,time_start,time_end,future)
 # I will need to combine all datasets here in the future
 
 df = DataFrame()
-df['price'] = np.sin(np.arange(0,100,0.01))
+df['price'] = np.sin(np.arange(0,10,0.1))
 
 
 # Make a differenced series
@@ -78,11 +78,12 @@ for r in range(repeats):
 	print('%d) Test RMSE: %.3f' % (r+1, rmse))
 	if r == 0:
 		lstm_model.save_weights("best_model.hdf5")
-		decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5")
+		encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5")
 	else:
 		if rmse < min(error_scores):
 			print "Best model so far has been found: Saving model"
 			lstm_model.save_weights("best_model.hdf5")
+			encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.hdf5")
 
 	error_scores.append(rmse)
 
