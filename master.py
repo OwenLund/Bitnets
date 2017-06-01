@@ -108,8 +108,8 @@ def fit_lstm(train, batch_size, nb_epoch, neurons,loss,val_loss):
 	model.add(Dense(1))
 
 
-	early = EarlyStopping(monitor ='val_loss', min_delta=0, patience=100, verbose=1, mode='auto')
-	checkpointer = ModelCheckpoint(filepath="temp_weights.hdf5", verbose=0,save_best_only=True,save_weights_only=True)
+	early = EarlyStopping(monitor ='val_loss', min_delta=0, patience=30, verbose=1, mode='auto')
+	checkpointer = ModelCheckpoint(filepath="temp_weights.h5", verbose=0,save_best_only=True,save_weights_only=True)
 	rms = RMSprop()
 	adam = Adam()
 	if optimizer == "rmsprop":
@@ -124,8 +124,8 @@ def fit_lstm(train, batch_size, nb_epoch, neurons,loss,val_loss):
 	loss.append(history.history['loss'])
 	val_loss.append(history.history['val_loss'])
 	model.reset_states()
-	model.load_weights("temp_weights.hdf5")
-	encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"temp_weights.hdf5")
+	model.load_weights("temp_weights.h5")
+	encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"temp_weights.h5")
 	return model, loss, val_loss
 
 def forecast_lstm(model, batch_size, X):

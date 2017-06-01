@@ -7,7 +7,7 @@ from master import *
 
 training_fraction = 0.8
 repeats = 1
-epochs = 1000
+epochs = 30
 nb_neurons = 10
 batch_size = 1
 future =  5
@@ -30,8 +30,8 @@ df['price'] = np.sin(np.arange(0,100,0.01))
 
 
 # Make a differenced series
-df = difference(df, future)
-df = df.dropna()
+#df = difference(df, future)
+#df = df.dropna()
 
 
 # Scale series between -1 and 1
@@ -67,7 +67,7 @@ for r in range(repeats):
 		prediction = forecast_lstm(lstm_model, batch_size, X)
 		prediction = invert_scale(scaler, X, prediction)
 
-		prediction = inverse_difference(df['price'].values[-len(test):], prediction, i)
+		#prediction = inverse_difference(df['price'].values[-len(test):], prediction, i)
 		predictions.append(prediction)
 
 	predictions = list(reversed(predictions))

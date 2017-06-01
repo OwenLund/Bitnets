@@ -1,12 +1,14 @@
 from master import *
 
+
+
+
 n_samples = 10
-training_fraction = 0.8
-repeats = 1
-epochs = 1000
-nb_neurons = 10
 batch_size = 1
 future =  5
+training_fraction = 0.8
+model_name = "best_model"
+
 # load and prepare price dataset
 bitcoindata = read_csv(os.path.join(os.path.expanduser('~'),'krakenEUR.csv'), header=None,names=['time','price','volume'], squeeze=True,nrows=n_samples)
 time_start,time_end = min(bitcoindata['time']),max(bitcoindata['time'])
@@ -18,30 +20,28 @@ df = bin_data(bitcoindata,action,time_start,time_end,future)
 # I will need to combine all datasets here in the future
 
 df = DataFrame()
-df['price'] = np.sin(np.arange(0,10,0.1))
-
+df['price'] = np.sin(np.arange(0,100,0.01))
 
 # Make a differenced series
 df = difference(df, future)
 df = df.dropna()
 
-
 # Scale series between -1 and 1
 scaler, df = scale(df,training_fraction)
-
 df = timeseries_to_supervised(df, future)
 df = df.dropna()
 
 
 
 train, test = df[:-int( (1-training_fraction)*len(df)) ], df[-int( (1-training_fraction)*len(df)):]
-loss, val_loss = [],[]
 # EVALUATE THE BEST PREDICTIONS
-decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.h5.enc")
-lstm_model = load_model("best_model.h5")
-lstm_model.load_weights("best_model.h5")
-encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"best_model.h5")
+decrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"%s.h5.enc"%model_name)
+lstm_model = load_model("%s.h5"%model_name)
+lstm_model.load_weights("temp_weights.hdf5")
+encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"%s.h5"%model_name)
 lstm_model.reset_states()
+
+
 columns = list(train.columns.values)
 X = train[columns[:-1]]
 X = X.values.reshape(X.shape[0], 1, X.shape[1])
@@ -70,6 +70,9 @@ plt.legend()
 plt.show()
 
 
+
+
+#"""
 """
 loss = reduce(operator.add,loss)
 val_loss= reduce(operator.add,val_loss)
