@@ -95,7 +95,7 @@ def invert_scale(scaler, X, value):
 
 def fit_lstm(train, batch_size, nb_epoch, neurons,loss,val_loss):
 
-	optimizer = "adam"
+	optimizer = "rmsprop"
 
 
 	columns = list(train.columns.values)[:-1]
@@ -104,7 +104,7 @@ def fit_lstm(train, batch_size, nb_epoch, neurons,loss,val_loss):
 
 
 	model = Sequential()
-	model.add(LSTM(neurons, input_shape=(X.shape[2], 1),batch_size=batch_size, stateful=True))
+	model.add(LSTM(neurons, input_shape=(1, 1),batch_size=batch_size, stateful=True))
 	model.add(Dense(1))
 
 
@@ -117,10 +117,9 @@ def fit_lstm(train, batch_size, nb_epoch, neurons,loss,val_loss):
 	elif optimizer =="adam":
 		model.compile(loss="mean_squared_error", optimizer=adam)
 	callbacks = [early,checkpointer]
-	model.compile(loss='mean_squared_error', optimizer='adam')
 
 
-	history = model.fit(X, y, epochs=nb_epoch, batch_size=batch_size, verbose=1, shuffle=False,callbacks=callbacks,validation_split=0.2)
+	history = model.fit(X, y, epochs=nb_epoch, batch_size=batch_size, verbose=1, shuffle=False,callbacks=callbacks,validation_split=0.1)
 	loss.append(history.history['loss'])
 	val_loss.append(history.history['val_loss'])
 	model.reset_states()
@@ -130,7 +129,7 @@ def fit_lstm(train, batch_size, nb_epoch, neurons,loss,val_loss):
 
 def forecast_lstm(model, batch_size, X):
 	"Make a forward Prediction"
-	X = X.reshape(1, 1, len(X))
+	X = X.reshape(1,1,len(X))
 	yhat = model.predict(X, batch_size=batch_size)
 	return yhat[0,0]
 

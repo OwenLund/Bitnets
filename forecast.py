@@ -53,7 +53,7 @@ lstm_model.predict(X, batch_size=batch_size)
 # walk-forward validation on the test data
 predictions = list()
 for i in range(len(test)-future):
-	X, y = test[columns[:-1]].values[i], test['target'].values[i]
+	X = test[columns[:-1]].values[i]
 	prediction = forecast_lstm(lstm_model, batch_size, X)
 	prediction = invert_scale(scaler, X, prediction)
 	#prediction = inverse_difference(df['price'].values[-len(test):], prediction, i)
