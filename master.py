@@ -12,6 +12,7 @@ from keras.optimizers import Adam, RMSprop, SGD
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau, Callback,ModelCheckpoint
 from keras.layers import Dense, TimeDistributed, LSTM, Dropout, GRU
 import os
+from encrypter import *
 
 
 
@@ -93,90 +94,61 @@ def invert_scale(scaler, X, value):
 		array = scaler[i].inverse_transform(array)
 	return array[0, -1]
 
-def fit_lstm(train, batch_size, nb_epoch, neurons,loss,val_loss):
-
-	optimizer = "rmsprop"
 
 
-	columns = list(train.columns.values)[:-1]
-	X, y = train[columns], train['target']
-	X = X.values.reshape(X.shape[0], 1, X.shape[1])
 
 
-	model = Sequential()
-	model.add(LSTM(neurons, input_shape=(1, 1),batch_size=batch_size, stateful=True))
-	model.add(Dense(1))
 
 
-	early = EarlyStopping(monitor ='val_loss', min_delta=0, patience=30, verbose=1, mode='auto')
-	checkpointer = ModelCheckpoint(filepath="temp_weights.h5", verbose=0,save_best_only=True,save_weights_only=True)
-	rms = RMSprop()
-	adam = Adam()
-	if optimizer == "rmsprop":
-		model.compile(loss="mean_squared_error", optimizer=rms)
-	elif optimizer =="adam":
-		model.compile(loss="mean_squared_error", optimizer=adam)
-	callbacks = [early,checkpointer]
+class neuralNet:
+
+	def __init__(self,neurons,thetype,batch_size,stateful):
+		self.neurons = neurons
+		self.optimizer = "rmsprop"
+		self.type = thetype
+		self.batch_size = batch_size
+		self.loss = []
+		self.val_loss = []
+		self.stateful = stateful
+		self.model = Sequential()
+		self.model.add(LSTM(neurons, input_shape=(1, 1),batch_size=batch_size, stateful=stateful))
+		self.model.add(Dense(1))
+		early = EarlyStopping(monitor ='val_loss', min_delta=0, patience=30, verbose=1, mode='auto')
+		checkpointer = ModelCheckpoint(filepath="temp_weights.h5", verbose=0,save_best_only=True,save_weights_only=True)
+		rms = RMSprop()
+		adam = Adam()
+		if self.optimizer == "rmsprop":
+			self.model.compile(loss="mean_squared_error", optimizer=rms)
+		elif self.optimizer =="adam":
+			self.model.compile(loss="mean_squared_error", optimizer=adam)
+		self.callbacks = [early,checkpointer]
 
 
-	history = model.fit(X, y, epochs=nb_epoch, batch_size=batch_size, verbose=1, shuffle=False,callbacks=callbacks,validation_split=0.1)
-	loss.append(history.history['loss'])
-	val_loss.append(history.history['val_loss'])
-	model.reset_states()
-	model.load_weights("temp_weights.h5")
-	encrypt_file(open(os.path.join(os.path.expanduser('~'),'BitnetsAESKey.txt'), "r").read(),"temp_weights.h5")
-	return model, loss, val_loss
+	def fit(self,data,epochs):
+		columns = list(data.columns.values)[:-1]
+		X, y = data[columns], data['target']
+		X = X.values.reshape(X.shape[0], 1, X.shape[1])
 
-def forecast_lstm(model, batch_size, X):
-	"Make a forward Prediction"
-	X = X.reshape(1,1,len(X))
-	yhat = model.predict(X, batch_size=batch_size)
-	return yhat[0,0]
+		history = self.model.fit(X, y, epochs=epochs, batch_size=self.batch_size, verbose=1, shuffle=False,callbacks=self.callbacks,validation_split=0.1)
+		self.loss.append(history.history['loss'])
+		self.val_loss.append(history.history['val_loss'])
+		self.model.reset_states()
+		self.model.load_weights("temp_weights.h5")
+		crypt().encrypt("temp_weights.h5")
+		
 
+	def forecast(self,X,batch_size):
+		"Make a forward Prediction"
+		X = X.reshape(1,1,len(X))
+		yhat = self.model.predict(X, batch_size=batch_size)
+		return yhat[0,0]
 
-from Crypto.Cipher import AES
-from Crypto import Random
-import os, random, struct
+	def save(self,name):
+		self.model.save(name)
+		crypt().encrypt("best_model.h5")
 
-def encrypt_file(key, in_filename, out_filename=None, chunksize=64*1024):
+	def reset_states(self):
+		self.model.reset_states
 
-    if not out_filename:
-        out_filename = in_filename + '.enc'
-
-    iv = ''.join(chr(random.randint(0, 0xFF)) for i in range(16))
-    encryptor = AES.new(key, AES.MODE_CBC, iv)
-    filesize = os.path.getsize(in_filename)
-
-    with open(in_filename, 'rb') as infile:
-        with open(out_filename, 'wb') as outfile:
-            outfile.write(struct.pack('<Q', filesize))
-            outfile.write(iv)
-
-            while True:
-                chunk = infile.read(chunksize)
-                if len(chunk) == 0:
-                    break
-                elif len(chunk) % 16 != 0:
-                    chunk += ' ' * (16 - len(chunk) % 16)
-
-                outfile.write(encryptor.encrypt(chunk))
-    os.remove(in_filename)
-
-def decrypt_file(key, in_filename, out_filename=None, chunksize=24*1024):
-    if not out_filename:
-        out_filename = os.path.splitext(in_filename)[0]
-
-    with open(in_filename, 'rb') as infile:
-        origsize = struct.unpack('<Q', infile.read(struct.calcsize('Q')))[0]
-        iv = infile.read(16)
-        decryptor = AES.new(key, AES.MODE_CBC, iv)
-
-        with open(out_filename, 'wb') as outfile:
-            while True:
-                chunk = infile.read(chunksize)
-                if len(chunk) == 0:
-                    break
-                outfile.write(decryptor.decrypt(chunk))
-
-            outfile.truncate(origsize)
-    os.remove(in_filename)
+	def predict(data):
+		self.model.forecast()
